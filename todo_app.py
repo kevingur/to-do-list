@@ -12,7 +12,6 @@ Streamlit Cloud > App settings > Secrets.
 from datetime import date, datetime, timezone
 
 import streamlit as st
-from streamlit_sortables import sort_items
 from supabase import Client, create_client
 
 # ---------- connection ----------
@@ -32,7 +31,7 @@ def now_iso() -> str:
 
 # ---------- data ----------
 def fetch_todos() -> list[dict]:
-    return sb.table("todos").select("*").order("position").order("created_at").execute().data
+    return sb.table("todos").select("*").order("created_at").execute().data
 
 
 def log(action: str, todo_id: str | None, detail: str) -> None:
@@ -42,35 +41,14 @@ def log(action: str, todo_id: str | None, detail: str) -> None:
 
 
 # ---------- actions ----------
-def add_todo(who: str, job: str, due: date, todos: list[dict]) -> None:
-    """New task goes to the end, unless an existing task has the same Who:
-    then it slips in right after that group."""
-    key = who.strip().casefold()
-    positions = [t["position"] for t in todos if t["position"] is not None]
-    pos = (max(positions) + 1) if positions else 1.0
-    if key:
-        last = None
-        for i, t in enumerate(todos):
-            if t["name"].strip().casefold() == key:
-                last = i
-        if last is not None and last + 1 < len(todos):
-            a, b = todos[last]["position"], todos[last + 1]["position"]
-            if a is not None and b is not None:
-                pos = (a + b) / 2
+def add_todo(who: str, job: str, due: date) -> None:
     row = (
         sb.table("todos")
-        .insert({"name": who.strip(), "description": job.strip(),
-                 "due": due.isoformat(), "position": pos})
+        .insert({"name": who.strip(), "description": job.strip(), "due": due.isoformat()})
         .execute()
         .data[0]
     )
     log("added", row["id"], f"{row['name']} — {row['description']}")
-
-
-def save_order(ordered_ids: list[str]) -> None:
-    for i, tid in enumerate(ordered_ids, start=1):
-        sb.table("todos").update({"position": float(i)}).eq("id", tid).execute()
-    log("reordered", None, f"{len(ordered_ids)} tasks")
 
 
 def set_done(todo_id: str, label: str, done: bool) -> None:
@@ -190,8 +168,6 @@ hr { margin: 0.5rem 0 !important; border-color: #EDEDEA !important; }
 div[data-testid="stPopoverBody"] { min-width: 150px !important; max-width: 170px; padding: 0.7rem 0.8rem !important;
     border-radius: 10px; }
 .confirm { font-size: 0.9rem; font-weight: 600; margin: 0 0 0.5rem 0; text-align: center; }
-.st-key-reorder_ctl { display: flex; justify-content: flex-end; margin-bottom: -0.3rem; }
-.st-key-reorder_ctl label p { font-size: 0.8rem !important; color: #8A8A8E; }
 .empty { color: #A0A0A3; font-size: 0.95rem; padding: 1.2rem 0; }
 </style>
 """,
@@ -224,28 +200,34 @@ with st.form("new_task", clear_on_submit=True, border=False):
                            label_visibility="collapsed")
     if a_btn.form_submit_button("Add", type="primary", use_container_width=True):
         if who.strip() or job.strip():
-            add_todo(who, job, due, todos)
+            add_todo(who, job, due)
             st.rerun()
         else:
             st.warning("Enter a name or a job first.")
 
 st.markdown("<div style='height:1.4rem'></div>", unsafe_allow_html=True)
 
-def hide_repeats(tasks: list[dict]) -> list[tuple[dict, bool]]:
-    """Hide the name when it repeats the row directly above."""
-    out, prev = [], None
+def group_rows(tasks: list[dict]) -> list[tuple[dict, bool]]:
+    """Insertion order, but a task whose Who matches an earlier task
+    is placed right after that group. Second value = True when the name
+    should be hidden (it repeats the row above)."""
+    ordered: list[tuple[dict, bool]] = []
     for t in tasks:
         key = t["name"].strip().casefold()
-        out.append((t, bool(key) and key == prev))
-        prev = key
-    return out
+        pos = None
+        if key:
+            for i in range(len(ordered) - 1, -1, -1):
+                if ordered[i][0]["name"].strip().casefold() == key:
+                    pos = i
+                    break
+        if pos is None:
+            ordered.append((t, False))
+        else:
+            ordered.insert(pos + 1, (t, True))
+    return ordered
 
 
-rows = hide_repeats(todos)
-
-_, c_mode = st.columns([4, 1.2], vertical_alignment="bottom")
-with c_mode.container(key="reorder_ctl"):
-    reorder = st.toggle("Reorder", value=False)
+rows = group_rows(todos)
 
 # ---------- table ----------
 def header_row() -> None:
@@ -293,15 +275,6 @@ def render(todo: dict, hide_name: bool = False, divider: bool = True) -> None:
         if divider:
             st.divider()
 
-
-if reorder:
-    labels = [f"{i + 1}. {t['name'] or '—'} — {t['description'] or '—'}" for i, t in enumerate(todos)]
-    new_labels = sort_items(labels, direction="vertical")
-    if st.button("Save order", type="primary"):
-        ids = [todos[int(lbl.split(".", 1)[0]) - 1]["id"] for lbl in new_labels]
-        save_order(ids)
-        st.rerun()
-    st.stop()
 
 header_row()
 with st.container(key="rows"):

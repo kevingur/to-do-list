@@ -165,7 +165,7 @@ def run_quick_add(text: str) -> None:
 
 
 # ---------- page & styling ----------
-st.set_page_config(page_title="To-do-list", page_icon="aproch.png", layout="wide")
+st.set_page_config(page_title="To-do", page_icon="✓", layout="wide")
 
 st.markdown(
     """
@@ -218,8 +218,6 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
     font-size: 0.95rem !important; letter-spacing: 0 !important; }
 .st-key-rows .react-aria-DateField span[data-type="literal"] { padding: 0 0.05rem !important; }
 [class*="st-key-row_done"] .react-aria-DateField span { color: #B0B0B3 !important; text-decoration: line-through !important; }
-[class*="st-key-row_late"] .react-aria-DateField span { color: #B24A3A !important; font-weight: 600 !important; }
-[class*="st-key-row_today"] .react-aria-DateField span { color: #2F4F6F !important; font-weight: 600 !important; }
 .st-key-rows div[data-testid="stTextInput"], .st-key-rows div[data-testid="stDateInput"],
 .st-key-rows div[data-testid="stTextArea"] { margin-bottom: 0; }
 .st-key-rows div[data-baseweb="textarea"] { background: transparent !important; border-color: transparent !important; }
@@ -238,8 +236,6 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 [class*="st-key-row_done"] div[data-testid="stDateInput"] div[data-baseweb="base-input"],
 [class*="st-key-row_done"] div[data-testid="stDateInput"] div[data-baseweb="input"] {
     color: #B0B0B3 !important; text-decoration: line-through !important; }
-[class*="st-key-row_late"] div[data-testid="stDateInput"] input { color: #B24A3A !important; font-weight: 600; }
-[class*="st-key-row_today"] div[data-testid="stDateInput"] input { color: #2F4F6F !important; font-weight: 600; }
 
 /* grouped rows: pull each sub row up against the row above */
 .st-key-rows [data-testid="stVerticalBlock"] { gap: 0.6rem !important; }

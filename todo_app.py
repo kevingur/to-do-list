@@ -248,8 +248,15 @@ div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { 
 [class*="st-key-stat_"] button p { color: inherit !important; }
 
 /* centre the ✕ and the Q inside their popover triggers */
+[class*="st-key-del_"] div[data-testid="stPopover"], [class*="st-key-del_"] div[data-testid="stPopover"] > div,
+.st-key-qdel div[data-testid="stPopover"], .st-key-qdel div[data-testid="stPopover"] > div {
+    width: 100% !important; max-width: 100% !important; display: block !important; }
+[class*="st-key-del_"] button, .st-key-qdel button {
+    width: 100% !important; max-width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; }
+[class*="st-key-del_"] button > *:not([data-testid="stMarkdownContainer"]),
+.st-key-qdel button > *:not([data-testid="stMarkdownContainer"]) { display: none !important; }
 [class*="st-key-del_"] button > div, .st-key-qdel button > div {
-    width: 100% !important; display: flex !important; justify-content: center !important;
+    width: 100% !important; flex: 1 1 100% !important; display: flex !important; justify-content: center !important;
     align-items: center !important; margin: 0 !important; padding: 0 !important; gap: 0 !important; }
 [class*="st-key-del_"] button p, .st-key-qdel button p { width: 100% !important; text-align: center !important; margin: 0 !important; }
 

@@ -214,15 +214,12 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 
 /* quick add has 2 columns, new task has 4: balance flex-grow so both Add buttons end up the same width */
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stTextInput"]) { flex-grow: 3 !important; }
-/* "Quick add" label and the mic sit on one line, side by side */
-.st-key-quick_lbl > div > [data-testid="stVerticalBlock"],
-.st-key-quick_lbl [data-testid="stVerticalBlock"] { flex-direction: row !important; align-items: center !important;
-    gap: 0.35rem !important; }
-.st-key-quick_lbl [data-testid="stElementContainer"], .st-key-quick_lbl .st-key-quick_mic,
-.st-key-quick_lbl [data-testid="stVerticalBlockBorderWrapper"] { width: auto !important; }
+/* mic pinned just right of the "Quick add" label, on the same line */
+.st-key-quick_lbl { position: relative; margin-bottom: 0.3rem; }
 .st-key-quick_lbl .add-h { margin-bottom: 0; }
-.st-key-quick_lbl { margin-bottom: 0.3rem; }
-.st-key-quick_mic iframe { height: 1.1rem !important; width: 1.3rem !important; display: block; margin-top: -2px; }
+.st-key-quick_lbl .st-key-quick_mic { position: absolute !important; left: 5.9rem; top: -0.15rem;
+    width: auto !important; height: 1.2rem !important; margin: 0 !important; }
+.st-key-quick_mic iframe { height: 1.1rem !important; width: 1.3rem !important; display: block; }
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stFormSubmitButton"]) { flex-grow: 1 !important; }
 
 .st-key-quick_add div[data-testid="stForm"] { padding: 0; border: none; }

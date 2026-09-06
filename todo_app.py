@@ -218,6 +218,23 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-quick_mic { margin-bottom: 0.3rem; }
 .st-key-quick_mic iframe { height: 1.1rem !important; width: 14rem !important; display: block; }
 
+/* Q (quick delete) button in the header row */
+div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { gap: 0 !important; }
+.st-key-qdel div[data-testid="stPopover"], .st-key-qdel div[data-testid="stPopover"] > div { margin: 0 !important; }
+/* the Q overlaps the (blank) header label below it, so its underline matches the other columns exactly */
+.st-key-qdel { margin: 0 0 -1.3rem 0 !important; position: relative; z-index: 2; }
+.st-key-qdel div[data-testid="stPopover"] { width: 100%; }
+.st-key-qdel div[data-testid="stPopover"] > button, .st-key-qdel button {
+    width: 100% !important; min-height: 0 !important; height: 1.2rem !important; line-height: 1 !important;
+    padding: 0 !important; border: none !important;
+    background: transparent !important; box-shadow: none !important; color: #8A8A8E !important;
+    font-size: 0.78rem !important; font-weight: 600 !important; justify-content: center; }
+.st-key-qdel button:hover { color: #B24A3A !important; }
+.st-key-qdel button p { color: inherit !important; font-weight: 600 !important; font-size: 0.78rem !important;
+    transform: translate(-50%, calc(-50% - 2px)) !important; }
+.st-key-qdel button svg, .st-key-qdel button span[data-testid="stIconMaterial"],
+.st-key-qdel button [data-testid*="Icon"] { display: none !important; }
+
 /* Add button matches input height */
 .st-key-new_task div[data-testid="stButton"] button,
 .st-key-quick_add div[data-testid="stFormSubmitButton"] button { min-height: 2.6rem !important; max-height: 2.6rem; border-radius: 6px !important; }
@@ -339,7 +356,7 @@ if "ANTHROPIC_API_KEY" in st.secrets:
                     ".myButton{border:none !important;background:transparent !important;"
                     "box-shadow:none !important;padding:0 !important;margin:0 !important;"
                     "font-family:'Manrope',-apple-system,sans-serif !important;"
-                    "font-size:12.5px !important;font-weight:600 !important;letter-spacing:0.02em;"
+                    "font-size:11.5px !important;font-weight:600 !important;letter-spacing:0.02em;"
                     "color:#8A8A8E !important;line-height:1.2 !important;cursor:pointer;text-align:left;"
                     "white-space:nowrap}"
                     ".myButton:hover{color:#1B1B1F !important}"
@@ -487,3 +504,4 @@ with st.container(key="rows"):
     for i, (t, hide) in enumerate(rows):
         next_is_sub = i + 1 < len(rows) and rows[i + 1][1]
         render(t, hide, divider=not next_is_sub)
+        

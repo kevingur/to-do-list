@@ -204,7 +204,8 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 [class*="_sub_"] { margin-top: -0.55rem !important; }
 
 /* Add button matches input height */
-.st-key-new_task div[data-testid="stButton"] button { min-height: 2.6rem !important; border-radius: 6px !important; }
+.st-key-new_task div[data-testid="stButton"] button,
+.st-key-quick_add div[data-testid="stButton"] button { min-height: 2.6rem !important; max-height: 2.6rem; border-radius: 6px !important; }
 
 /* status toggle */
 [class*="st-key-stat_"] div[data-testid="stButton"] { width: 100%; }
@@ -265,7 +266,8 @@ div[data-testid="stPopoverBody"] { min-width: 150px !important; max-width: 170px
     div[data-testid="stDateInput"] input { letter-spacing: -0.02em; }
     .col-h, .add-h { font-size: 0.7rem; }
     [class*="st-key-stat_"] div[data-testid="stButton"] button { font-size: 0.8rem !important; padding: 0 !important; }
-    .st-key-new_task div[data-testid="stButton"] button { padding: 0 !important; font-size: 0.8rem !important; min-height: 2.6rem !important; }
+    .st-key-new_task div[data-testid="stButton"] button,
+    .st-key-quick_add div[data-testid="stButton"] button { padding: 0 !important; font-size: 0.8rem !important; min-height: 2.6rem !important; }
     [class*="st-key-del_"] button { font-size: 0.95rem !important; }
 }
 </style>
@@ -292,12 +294,14 @@ except Exception as e:
 # ---------- quick add ----------
 if "ANTHROPIC_API_KEY" in st.secrets:
     st.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
-    q_txt, q_btn = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3] + WIDTHS[4]],
-                              vertical_alignment="bottom")
-    q_txt.text_input("Quick add", key="quick_text", label_visibility="collapsed",
-                     placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"",
-                     on_change=run_quick_add)
-    q_btn.button("Add", key="quick_btn", on_click=run_quick_add, use_container_width=True)
+    with st.container(key="quick_add"):
+        q_txt, q_btn, _ = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3], WIDTHS[4]],
+                                     vertical_alignment="bottom")
+        q_txt.text_input("Quick add", key="quick_text", label_visibility="collapsed",
+                         placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"",
+                         on_change=run_quick_add)
+        q_btn.button("Add", key="quick_btn", type="primary", on_click=run_quick_add,
+                     use_container_width=True)
     if st.session_state.get("quick_error"):
         st.caption(f":red[{st.session_state['quick_error']}]")
     st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)

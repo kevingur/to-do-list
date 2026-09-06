@@ -219,7 +219,7 @@ div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { 
 .st-key-qdel div[data-testid="stPopover"] { width: 100%; }
 .st-key-qdel div[data-testid="stPopover"] > button, .st-key-qdel button {
     width: 100% !important; min-height: 0 !important; height: 1.2rem !important; line-height: 1 !important;
-    padding: 0 !important; border: none !important;
+    padding: 0 !important; border: none !important; position: relative; top: 0.45rem;
     background: transparent !important; box-shadow: none !important; color: #8A8A8E !important;
     font-size: 0.78rem !important; font-weight: 600 !important; justify-content: center; }
 .st-key-qdel button:hover { color: #B24A3A !important; }

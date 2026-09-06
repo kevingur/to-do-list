@@ -226,7 +226,7 @@ div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { 
     font-size: 0.78rem !important; font-weight: 600 !important; justify-content: center; }
 .st-key-qdel button:hover { color: #B24A3A !important; }
 .st-key-qdel button p { color: inherit !important; font-weight: 600 !important; font-size: 0.78rem !important;
-    position: relative; top: -2px; }
+    transform: translate(-50%, calc(-50% - 2px)) !important; }
 .st-key-qdel button svg, .st-key-qdel button span[data-testid="stIconMaterial"],
 .st-key-qdel button [data-testid*="Icon"] { display: none !important; }
 
@@ -250,15 +250,14 @@ div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { 
 /* centre the ✕ and the Q inside their popover triggers */
 [class*="st-key-del_"] div[data-testid="stPopover"], [class*="st-key-del_"] div[data-testid="stPopover"] > div,
 .st-key-qdel div[data-testid="stPopover"], .st-key-qdel div[data-testid="stPopover"] > div {
-    width: 100% !important; max-width: 100% !important; display: block !important; }
+    width: 100% !important; max-width: 100% !important; }
 [class*="st-key-del_"] button, .st-key-qdel button {
-    width: 100% !important; max-width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; }
-[class*="st-key-del_"] button > *:not([data-testid="stMarkdownContainer"]),
-.st-key-qdel button > *:not([data-testid="stMarkdownContainer"]) { display: none !important; }
-[class*="st-key-del_"] button > div, .st-key-qdel button > div {
-    width: 100% !important; flex: 1 1 100% !important; display: flex !important; justify-content: center !important;
-    align-items: center !important; margin: 0 !important; padding: 0 !important; gap: 0 !important; }
-[class*="st-key-del_"] button p, .st-key-qdel button p { width: 100% !important; text-align: center !important; margin: 0 !important; }
+    position: relative !important; width: 100% !important; max-width: 100% !important;
+    padding-left: 0 !important; padding-right: 0 !important; }
+/* pin the label to the exact centre of the button, whatever wrappers Streamlit adds */
+[class*="st-key-del_"] button p, .st-key-qdel button p {
+    position: absolute !important; left: 50% !important; top: 50% !important;
+    transform: translate(-50%, -50%) !important; margin: 0 !important; width: auto !important; }
 
 /* delete */
 div[data-testid="stButton"]:has(button[kind="tertiary"]) { width: 100%; }

@@ -486,7 +486,7 @@ def render(todo: dict, hide_name: bool = False, divider: bool = True) -> None:
 
     state = "done" if done else "late" if due < today else "today" if due == today else "open"
     with st.container(key=f"row_{state}_{'sub' if hide_name else 'top'}_{tid}"):
-        c_who, c_job, c_due, c_stat, c_del = st.columns(WIDTHS, vertical_alignment="center")
+        c_who, c_job, c_due, c_stat, c_del = st.columns(WIDTHS, vertical_alignment="top")
 
         if hide_name:
             c_who.empty()
@@ -494,8 +494,8 @@ def render(todo: dict, hide_name: bool = False, divider: bool = True) -> None:
             c_who.text_input("Who", value=todo["name"], key=f"who_{tid}",
                              label_visibility="collapsed", placeholder="Who",
                              on_change=save_text, args=(tid, "name", f"who_{tid}"))
-        if len(todo["description"]) > 70:
-            rows_needed = 1 + len(todo["description"]) // 70
+        if len(todo["description"]) > 110:
+            rows_needed = 1 + len(todo["description"]) // 110
             c_job.text_area("Job", value=todo["description"], key=f"job_{tid}",
                             label_visibility="collapsed", placeholder="Job",
                             height=max(68, 26 + 22 * rows_needed),

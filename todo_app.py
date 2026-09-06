@@ -149,8 +149,6 @@ def run_quick_add(text: str) -> None:
         return
     add_todo(parsed["who"], parsed["job"], parsed["due"])
     st.session_state.pop("quick_error", None)
-    st.toast(f"Added: {parsed['who'] or '—'} · {parsed['job'] or '—'} · "
-             f"{parsed['due'].strftime('%d.%m.%Y')}", icon="✅")
 
 
 # ---------- page & styling ----------

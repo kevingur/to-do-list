@@ -207,7 +207,8 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows input { padding-left: 0.4rem !important; padding-right: 0.4rem !important; font-size: 0.95rem !important; }
 .st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"] input,
 .st-key-rows div[data-testid="stDateInput"] input { font-size: 0.84rem !important; letter-spacing: -0.02em !important;
-    padding: 0 0 0 0.3rem !important; text-align: left !important; }
+    padding: 0 0 0 0.3rem !important; text-align: left !important;
+    margin-left: -0.5rem !important; width: calc(100% + 0.5rem) !important; }
 /* strip every inner left inset the date widget adds, so the text starts where Who/Job text starts */
 .st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"],
 .st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"] > div,

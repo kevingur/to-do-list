@@ -316,6 +316,10 @@ div[data-testid="stPopoverBody"] div[data-baseweb="select"] { width: 100% !impor
     div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(4) { flex: 0 0 14% !important; }
     div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(5) { flex: 0 0 7% !important; }
 
+    /* quick add row (2 columns): text box stretches, Add matches the Add below (14%) */
+    .st-key-quick_add div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) { flex: 1 1 0 !important; }
+    .st-key-quick_add div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) { flex: 0 0 14% !important; }
+
     div[data-baseweb="input"], div[data-baseweb="base-input"] { min-width: 0 !important; }
     input { font-size: 0.8rem !important; padding-left: 0.35rem !important; padding-right: 0.2rem !important; }
     div[data-testid="stDateInput"] input { letter-spacing: -0.02em; }

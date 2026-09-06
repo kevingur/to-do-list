@@ -183,7 +183,7 @@ span[data-testid="stIconMaterial"], .material-symbols-rounded {
 
 header[data-testid="stHeader"], #MainMenu, footer { display: none; }
 div[data-testid="InputInstructions"] { display: none !important; }  /* "Press Enter to submit" hint */
-.block-container { max-width: 900px; margin: 0 auto; padding: 2.4rem 2rem 5rem 2rem; }
+.block-container { max-width: 980px; margin: 0 auto; padding: 2.4rem 2rem 5rem 2rem; }
 
 .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.4rem; }
 .hdr .day  { font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }

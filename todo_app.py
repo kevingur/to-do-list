@@ -53,6 +53,21 @@ def add_todo(who: str, job: str, due: date) -> None:
     log("added", row["id"], f"{row['name']} — {row['description']}")
 
 
+def submit_new_task() -> None:
+    """Add button callback: read the New task fields, save, then reset them."""
+    who = st.session_state.get("nt_who", "").strip()
+    job = st.session_state.get("nt_job", "").strip()
+    due = st.session_state.get("nt_due") or date.today()
+    if not (who or job):
+        st.session_state["nt_error"] = "Enter a name or a job first."
+        return
+    add_todo(who, job, due)
+    st.session_state["nt_who"] = ""
+    st.session_state["nt_job"] = ""
+    st.session_state["nt_due"] = date.today()
+    st.session_state.pop("nt_error", None)
+
+
 def set_done(todo_id: str, label: str, done: bool) -> None:
     sb.table("todos").update(
         {"done": done, "completed_at": now_iso() if done else None}
@@ -188,6 +203,9 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows [data-testid="stVerticalBlock"] { gap: 0.6rem !important; }
 [class*="_sub_"] { margin-top: -0.55rem !important; }
 
+/* Add button matches input height */
+.st-key-new_task div[data-testid="stButton"] button { min-height: 2.6rem !important; border-radius: 6px !important; }
+
 /* status toggle */
 [class*="st-key-stat_"] div[data-testid="stButton"] { width: 100%; }
 [class*="st-key-stat_"] div[data-testid="stButton"] button {
@@ -247,7 +265,7 @@ div[data-testid="stPopoverBody"] { min-width: 150px !important; max-width: 170px
     div[data-testid="stDateInput"] input { letter-spacing: -0.02em; }
     .col-h, .add-h { font-size: 0.7rem; }
     [class*="st-key-stat_"] div[data-testid="stButton"] button { font-size: 0.8rem !important; padding: 0 !important; }
-    div[data-testid="stFormSubmitButton"] button { padding: 0 !important; font-size: 0.8rem !important; min-height: 2.6rem !important; }
+    .st-key-new_task div[data-testid="stButton"] button { padding: 0 !important; font-size: 0.8rem !important; min-height: 2.6rem !important; }
     [class*="st-key-del_"] button { font-size: 0.95rem !important; }
 }
 </style>
@@ -289,18 +307,15 @@ st.session_state.setdefault("nt_who", "")
 st.session_state.setdefault("nt_job", "")
 st.session_state.setdefault("nt_due", today)
 st.markdown("<div class='add-h'>New task</div>", unsafe_allow_html=True)
-with st.form("new_task", clear_on_submit=True, border=False):
+with st.container(key="new_task"):
     a_who, a_job, a_due, a_btn, _ = st.columns(WIDTHS, vertical_alignment="bottom")
-    who = a_who.text_input("Who", key="nt_who", placeholder="Who", label_visibility="collapsed")
-    job = a_job.text_input("Job", key="nt_job", placeholder="Job", label_visibility="collapsed")
-    due = a_due.date_input("Due", key="nt_due", format="DD.MM.YYYY",
-                           label_visibility="collapsed")
-    if a_btn.form_submit_button("Add", type="primary", use_container_width=True):
-        if who.strip() or job.strip():
-            add_todo(who, job, due)
-            st.rerun()
-        else:
-            st.warning("Enter a name or a job first.")
+    a_who.text_input("Who", key="nt_who", placeholder="Who", label_visibility="collapsed")
+    a_job.text_input("Job", key="nt_job", placeholder="Job", label_visibility="collapsed")
+    a_due.date_input("Due", key="nt_due", format="DD.MM.YYYY", label_visibility="collapsed")
+    a_btn.button("Add", key="nt_add", type="primary", on_click=submit_new_task,
+                 use_container_width=True)
+    if st.session_state.get("nt_error"):
+        st.caption(f":red[{st.session_state['nt_error']}]")
 
 st.markdown("<div style='height:1.4rem'></div>", unsafe_allow_html=True)
 

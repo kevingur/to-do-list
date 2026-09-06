@@ -132,17 +132,22 @@ def parse_task(text: str) -> dict:
             "job": str(data.get("job", "")).strip(), "due": due}
 
 
-def run_quick_add() -> None:
-    text = st.session_state.get("quick_text", "").strip()
+def run_quick_add(text: str) -> None:
+    text = text.strip()
     if not text:
         return
+    # guard: the same sentence within 15 s is a double-fire, not a second task
+    last = st.session_state.get("quick_last")
+    now = datetime.now()
+    if last and last[0] == text.casefold() and (now - last[1]).total_seconds() < 15:
+        return
+    st.session_state["quick_last"] = (text.casefold(), now)
     try:
         parsed = parse_task(text)
     except Exception as e:  # noqa: BLE001
         st.session_state["quick_error"] = f"Couldn't parse that: {e}"
         return
     add_todo(parsed["who"], parsed["job"], parsed["due"])
-    st.session_state["quick_text"] = ""
     st.session_state.pop("quick_error", None)
     st.toast(f"Added: {parsed['who'] or '—'} · {parsed['job'] or '—'} · "
              f"{parsed['due'].strftime('%d.%m.%Y')}", icon="✅")
@@ -205,11 +210,13 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 
 /* quick add has 2 columns, new task has 4: balance flex-grow so both Add buttons end up the same width */
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stTextInput"]) { flex-grow: 3 !important; }
-.st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stButton"]) { flex-grow: 1 !important; }
+.st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stFormSubmitButton"]) { flex-grow: 1 !important; }
+
+.st-key-quick_add div[data-testid="stForm"] { padding: 0; border: none; }
 
 /* Add button matches input height */
 .st-key-new_task div[data-testid="stButton"] button,
-.st-key-quick_add div[data-testid="stButton"] button { min-height: 2.6rem !important; max-height: 2.6rem; border-radius: 6px !important; }
+.st-key-quick_add div[data-testid="stFormSubmitButton"] button { min-height: 2.6rem !important; max-height: 2.6rem; border-radius: 6px !important; }
 
 /* status toggle */
 [class*="st-key-stat_"] div[data-testid="stButton"] { width: 100%; }
@@ -271,7 +278,7 @@ div[data-testid="stPopoverBody"] { min-width: 150px !important; max-width: 170px
     .col-h, .add-h { font-size: 0.7rem; }
     [class*="st-key-stat_"] div[data-testid="stButton"] button { font-size: 0.8rem !important; padding: 0 !important; }
     .st-key-new_task div[data-testid="stButton"] button,
-    .st-key-quick_add div[data-testid="stButton"] button { padding: 0 !important; font-size: 0.8rem !important; min-height: 2.6rem !important; }
+    .st-key-quick_add div[data-testid="stFormSubmitButton"] button { padding: 0 !important; font-size: 0.8rem !important; min-height: 2.6rem !important; }
     [class*="st-key-del_"] button { font-size: 0.95rem !important; }
 }
 </style>
@@ -299,13 +306,14 @@ except Exception as e:
 if "ANTHROPIC_API_KEY" in st.secrets:
     st.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
     with st.container(key="quick_add"):
-        q_txt, q_btn = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3] + WIDTHS[4]],
-                                  vertical_alignment="bottom")
-        q_txt.text_input("Quick add", key="quick_text", label_visibility="collapsed",
-                         placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"",
-                         on_change=run_quick_add)
-        q_btn.button("Add", key="quick_btn", type="primary", on_click=run_quick_add,
-                     use_container_width=True)
+        with st.form("quick_form", clear_on_submit=True, border=False):
+            q_txt, q_btn = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3] + WIDTHS[4]],
+                                      vertical_alignment="bottom")
+            quick_text = q_txt.text_input("Quick add", label_visibility="collapsed",
+                                          placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"")
+            if q_btn.form_submit_button("Add", type="primary", use_container_width=True):
+                run_quick_add(quick_text)
+                st.rerun()
     if st.session_state.get("quick_error"):
         st.caption(f":red[{st.session_state['quick_error']}]")
     st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)

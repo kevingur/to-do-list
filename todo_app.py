@@ -210,8 +210,11 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows div[data-baseweb="textarea"] { background: transparent !important; border-color: transparent !important; }
 .st-key-rows div[data-baseweb="textarea"]:hover, .st-key-rows div[data-baseweb="textarea"]:focus-within {
     border-color: #E0E0DC !important; background: #FFFFFF !important; }
-.st-key-rows textarea { padding: 0.55rem 0.4rem !important; font-size: 0.95rem !important; line-height: 1.5 !important;
-    min-height: 2.6rem !important; resize: none !important; }
+.st-key-rows div[data-baseweb="textarea"], .st-key-rows div[data-baseweb="base-input"]:has(textarea) {
+    height: auto !important; min-height: 0 !important; }
+.st-key-rows textarea { field-sizing: content; height: auto !important; min-height: 2.6rem !important;
+    max-height: none !important; padding: 0.55rem 0.4rem !important; font-size: 0.95rem !important;
+    line-height: 1.5 !important; resize: none !important; overflow: hidden !important; }
 [class*="st-key-row_done"] textarea { color: #B0B0B3 !important; text-decoration: line-through !important; }
 
 /* row states */

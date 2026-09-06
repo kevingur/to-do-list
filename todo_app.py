@@ -169,6 +169,31 @@ div[data-testid="stPopoverBody"] { min-width: 150px !important; max-width: 170px
     border-radius: 10px; }
 .confirm { font-size: 0.9rem; font-weight: 600; margin: 0 0 0.5rem 0; text-align: center; }
 .empty { color: #A0A0A3; font-size: 0.95rem; padding: 1.2rem 0; }
+
+/* ---------- phone layout: keep the 5 columns side by side ---------- */
+@media (max-width: 640px) {
+    .block-container { padding: 1.2rem 0.8rem 4rem !important; }
+    .hdr { margin-bottom: 1rem; }
+    .hdr .day { font-size: 1.5rem; }
+    .hdr .date { font-size: 0.8rem; }
+
+    div[data-testid="stHorizontalBlock"] { flex-wrap: nowrap !important; gap: 0.3rem !important; }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+        min-width: 0 !important; width: auto !important; }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) { flex: 0 0 21% !important; }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) { flex: 1 1 0 !important; }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) { flex: 0 0 26% !important; }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(4) { flex: 0 0 14% !important; }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(5) { flex: 0 0 7% !important; }
+
+    div[data-baseweb="input"], div[data-baseweb="base-input"] { min-width: 0 !important; }
+    input { font-size: 0.8rem !important; padding-left: 0.35rem !important; padding-right: 0.2rem !important; }
+    div[data-testid="stDateInput"] input { letter-spacing: -0.02em; }
+    .col-h, .add-h { font-size: 0.7rem; }
+    [class*="st-key-stat_"] div[data-testid="stButton"] button { font-size: 0.8rem !important; padding: 0 !important; }
+    div[data-testid="stFormSubmitButton"] button { padding: 0 !important; font-size: 0.8rem !important; min-height: 2.6rem !important; }
+    [class*="st-key-del_"] button { font-size: 0.95rem !important; }
+}
 </style>
 """,
     unsafe_allow_html=True,

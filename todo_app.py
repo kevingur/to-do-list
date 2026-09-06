@@ -281,7 +281,13 @@ hr { margin: 0.5rem 0 !important; border-color: #EDEDEA !important; }
 [class*="st-key-del_"] button [data-testid*="Icon"] { display: none !important; }
 div[data-testid="stPopoverBody"] { border-radius: 10px; }
 div[data-testid="stPopoverBody"]:has(.confirm) { min-width: 150px !important; max-width: 170px; padding: 0.7rem 0.8rem !important; }
-div[data-testid="stPopoverBody"]:has(div[data-testid="stMultiSelect"]) { min-width: 340px !important; max-width: 380px; padding: 0.9rem !important; }
+div[data-testid="stPopoverBody"]:has(div[data-testid="stMultiSelect"]) {
+    width: 360px !important; min-width: 360px !important; max-width: 360px !important;
+    padding: 0.9rem !important; box-sizing: border-box; }
+div[data-testid="stPopoverBody"]:has(div[data-testid="stMultiSelect"]) [data-testid="stVerticalBlock"],
+div[data-testid="stPopoverBody"] div[data-testid="stMultiSelect"],
+div[data-testid="stPopoverBody"] div[data-testid="stMultiSelect"] > div,
+div[data-testid="stPopoverBody"] div[data-baseweb="select"] { width: 100% !important; max-width: 100% !important; }
 .confirm { font-size: 0.9rem; font-weight: 600; margin: 0 0 0.5rem 0; text-align: center; }
 .empty { color: #A0A0A3; font-size: 0.95rem; padding: 1.2rem 0; }
 

@@ -111,7 +111,11 @@ Return ONLY a JSON object, no prose, no code fences:
 Rules:
 - "who": the person responsible. Give the bare name as it would appear in a list
   (strip Turkish case suffixes: "Ahmet'e" -> "Ahmet", "Ayşe'ye" -> "Ayşe").
-  If nobody is named, use "".
+  Messages almost always START with the person's name, then the task:
+  "Temel sipariş alsın" -> who "Temel". Treat the first word as a name even if it is
+  unusual, foreign, a nickname, or lowercase, as long as it is not a normal Turkish/English
+  word that belongs to the task ("yarın", "bugün", "kira" are not names).
+  Use "" only when the message clearly has no person in it.
 - "job": the task exactly as worded in the input. Only remove the person's name and
   the date words; do NOT change the verb form, tense, or wording otherwise.
   Example: "Ahmet yarın ödevini yapsın" -> job: "ödevini yapsın" (not "ödevini yap").
@@ -160,7 +164,7 @@ def run_quick_add(text: str) -> None:
 
 
 # ---------- page & styling ----------
-st.set_page_config(page_title="To-do", page_icon="✓", layout="centered")
+st.set_page_config(page_title="To-do", page_icon="✓", layout="wide")
 
 st.markdown(
     """
@@ -178,7 +182,7 @@ span[data-testid="stIconMaterial"], .material-symbols-rounded {
 
 header[data-testid="stHeader"], #MainMenu, footer { display: none; }
 div[data-testid="InputInstructions"] { display: none !important; }  /* "Press Enter to submit" hint */
-.block-container { max-width: 780px; padding-top: 2.4rem; padding-bottom: 5rem; }
+.block-container { max-width: 1400px; padding: 2.4rem 3rem 5rem 3rem; }
 
 .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.4rem; }
 .hdr .day  { font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
@@ -199,9 +203,16 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows div[data-baseweb="input"]:hover,
 .st-key-rows div[data-baseweb="input"]:focus-within {
     border-color: #E0E0DC !important; background: #FFFFFF !important; }
-.st-key-rows input { padding-left: 0.4rem !important; font-size: 0.95rem !important; }
-.st-key-rows div[data-testid="stTextInput"], .st-key-rows div[data-testid="stDateInput"] {
-    margin-bottom: 0; }
+.st-key-rows input { padding-left: 0.4rem !important; padding-right: 0.4rem !important; font-size: 0.95rem !important; }
+.st-key-rows div[data-testid="stDateInput"] input { font-size: 0.88rem !important; letter-spacing: -0.01em; padding-left: 0.35rem !important; padding-right: 0.35rem !important; }
+.st-key-rows div[data-testid="stTextInput"], .st-key-rows div[data-testid="stDateInput"],
+.st-key-rows div[data-testid="stTextArea"] { margin-bottom: 0; }
+.st-key-rows div[data-baseweb="textarea"] { background: transparent !important; border-color: transparent !important; }
+.st-key-rows div[data-baseweb="textarea"]:hover, .st-key-rows div[data-baseweb="textarea"]:focus-within {
+    border-color: #E0E0DC !important; background: #FFFFFF !important; }
+.st-key-rows textarea { padding: 0.45rem 0.4rem !important; font-size: 0.95rem !important; line-height: 1.4 !important;
+    resize: none !important; }
+[class*="st-key-row_done"] textarea { color: #B0B0B3 !important; text-decoration: line-through !important; }
 
 /* row states */
 [class*="st-key-row_done"] input,
@@ -342,7 +353,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-WIDTHS = [1.7, 3.6, 1.5, 0.7, 0.5]  # Who, Job, Due, Status/Add, delete
+WIDTHS = [1.4, 5.2, 1.05, 0.7, 0.45]  # Who, Job, Due, Status/Add, delete
 
 # ---------- load ----------
 try:
@@ -483,9 +494,16 @@ def render(todo: dict, hide_name: bool = False, divider: bool = True) -> None:
             c_who.text_input("Who", value=todo["name"], key=f"who_{tid}",
                              label_visibility="collapsed", placeholder="Who",
                              on_change=save_text, args=(tid, "name", f"who_{tid}"))
-        c_job.text_input("Job", value=todo["description"], key=f"job_{tid}",
-                         label_visibility="collapsed", placeholder="Job",
-                         on_change=save_text, args=(tid, "description", f"job_{tid}"))
+        if len(todo["description"]) > 70:
+            rows_needed = 1 + len(todo["description"]) // 70
+            c_job.text_area("Job", value=todo["description"], key=f"job_{tid}",
+                            label_visibility="collapsed", placeholder="Job",
+                            height=max(68, 26 + 22 * rows_needed),
+                            on_change=save_text, args=(tid, "description", f"job_{tid}"))
+        else:
+            c_job.text_input("Job", value=todo["description"], key=f"job_{tid}",
+                             label_visibility="collapsed", placeholder="Job",
+                             on_change=save_text, args=(tid, "description", f"job_{tid}"))
         c_due.date_input("Due", value=due, key=f"due_{tid}", format="DD.MM.YYYY",
                          label_visibility="collapsed",
                          on_change=save_due, args=(tid, f"due_{tid}"))

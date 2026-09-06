@@ -165,7 +165,7 @@ def run_quick_add(text: str) -> None:
 
 
 # ---------- page & styling ----------
-st.set_page_config(page_title="To-do", page_icon="aproch.png", layout="wide")
+st.set_page_config(page_title="To-do-list", page_icon="aproch.png", layout="wide")
 
 st.markdown(
     """

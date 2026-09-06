@@ -204,8 +204,7 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows div[data-baseweb="input"]:focus-within {
     border-color: #E0E0DC !important; background: #FFFFFF !important; }
 .st-key-rows input { padding-left: 0.4rem !important; padding-right: 0.4rem !important; font-size: 0.95rem !important; }
-.st-key-rows div[data-testid="stDateInput"] input { font-size: 0.88rem !important; letter-spacing: -0.01em;
-    padding: 0 0.3rem !important; text-align: center !important; }
+.st-key-rows div[data-testid="stDateInput"] input { font-size: 0.88rem !important; letter-spacing: -0.01em; padding-left: 0.35rem !important; padding-right: 0.35rem !important; }
 .st-key-rows div[data-testid="stTextInput"], .st-key-rows div[data-testid="stDateInput"],
 .st-key-rows div[data-testid="stTextArea"] { margin-bottom: 0; }
 .st-key-rows div[data-baseweb="textarea"] { background: transparent !important; border-color: transparent !important; }
@@ -357,7 +356,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-WIDTHS = [1.4, 5.6, 0.8, 0.7, 0.45]  # Who, Job, Due, Status/Add, delete
+WIDTHS = [1.4, 5.2, 1.05, 0.7, 0.45]  # Who, Job, Due, Status/Add, delete
 
 # ---------- load ----------
 try:

@@ -1,5 +1,5 @@
 streamlit>=1.40
 supabase>=2.4
 anthropic>=0.40
-streamlit-mic-recorder>=0.0.8
+streamlit-mic-recorder-custom>=0.0.2
 SpeechRecognition>=3.10

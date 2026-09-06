@@ -141,11 +141,11 @@ def run_quick_add() -> None:
     except Exception as e:  # noqa: BLE001
         st.session_state["quick_error"] = f"Couldn't parse that: {e}"
         return
-    st.session_state["nt_who"] = parsed["who"]
-    st.session_state["nt_job"] = parsed["job"]
-    st.session_state["nt_due"] = parsed["due"]
+    add_todo(parsed["who"], parsed["job"], parsed["due"])
     st.session_state["quick_text"] = ""
     st.session_state.pop("quick_error", None)
+    st.toast(f"Added: {parsed['who'] or '—'} · {parsed['job'] or '—'} · "
+             f"{parsed['due'].strftime('%d.%m.%Y')}", icon="✅")
 
 
 # ---------- page & styling ----------
@@ -297,7 +297,7 @@ if "ANTHROPIC_API_KEY" in st.secrets:
     q_txt.text_input("Quick add", key="quick_text", label_visibility="collapsed",
                      placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"",
                      on_change=run_quick_add)
-    q_btn.button("Fill in", key="quick_btn", on_click=run_quick_add, use_container_width=True)
+    q_btn.button("Add", key="quick_btn", on_click=run_quick_add, use_container_width=True)
     if st.session_state.get("quick_error"):
         st.caption(f":red[{st.session_state['quick_error']}]")
     st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)

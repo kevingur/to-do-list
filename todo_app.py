@@ -14,6 +14,11 @@ from datetime import date, datetime, timezone
 
 import anthropic
 import streamlit as st
+
+try:
+    from streamlit_mic_recorder import speech_to_text
+except ImportError:  # package not installed -> no mic button, everything else works
+    speech_to_text = None
 from supabase import Client, create_client
 
 # ---------- connection ----------
@@ -209,6 +214,7 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 
 /* quick add has 2 columns, new task has 4: balance flex-grow so both Add buttons end up the same width */
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stTextInput"]) { flex-grow: 3 !important; }
+.st-key-quick_mic iframe { height: 2.6rem !important; display: block; }
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stFormSubmitButton"]) { flex-grow: 1 !important; }
 
 .st-key-quick_add div[data-testid="stForm"] { padding: 0; border: none; }
@@ -342,14 +348,27 @@ except Exception as e:
 if "ANTHROPIC_API_KEY" in st.secrets:
     st.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
     with st.container(key="quick_add"):
-        with st.form("quick_form", clear_on_submit=True, border=False):
-            q_txt, q_btn = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3] + WIDTHS[4]],
-                                      vertical_alignment="bottom")
-            quick_text = q_txt.text_input("Quick add", label_visibility="collapsed",
-                                          placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"")
-            if q_btn.form_submit_button("Add", type="primary", use_container_width=True):
-                run_quick_add(quick_text)
+        text_w = WIDTHS[0] + WIDTHS[1] + WIDTHS[2]
+        add_w = WIDTHS[3] + WIDTHS[4]
+        if speech_to_text:
+            mic_col, rest = st.columns([0.45, text_w + add_w - 0.45], vertical_alignment="bottom")
+            with mic_col.container(key="quick_mic"):
+                spoken = speech_to_text(language="tr", start_prompt="🎤", stop_prompt="⏹",
+                                        just_once=True, use_container_width=True, key="quick_stt")
+            if spoken:
+                run_quick_add(spoken)
                 st.rerun()
+            text_w -= 0.45
+        else:
+            rest = st.container()
+        with rest:
+            with st.form("quick_form", clear_on_submit=True, border=False):
+                q_txt, q_btn = st.columns([text_w, add_w], vertical_alignment="bottom")
+                quick_text = q_txt.text_input("Quick add", label_visibility="collapsed",
+                                              placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"")
+                if q_btn.form_submit_button("Add", type="primary", use_container_width=True):
+                    run_quick_add(quick_text)
+                    st.rerun()
     if st.session_state.get("quick_error"):
         st.caption(f":red[{st.session_state['quick_error']}]")
     st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)

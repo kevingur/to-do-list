@@ -215,11 +215,13 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 /* Q (quick delete) button in the header row */
 /* zero the vertical gap in the Q column so the Q sits directly on its underline */
 div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { gap: 0 !important; }
-.st-key-qdel, .st-key-qdel div[data-testid="stPopover"], .st-key-qdel div[data-testid="stPopover"] > div { margin: 0 !important; }
+.st-key-qdel div[data-testid="stPopover"], .st-key-qdel div[data-testid="stPopover"] > div { margin: 0 !important; }
+/* the Q overlaps the (blank) header label below it, so its underline matches the other columns exactly */
+.st-key-qdel { margin: 0 0 -1.3rem 0 !important; position: relative; z-index: 2; }
 .st-key-qdel div[data-testid="stPopover"] { width: 100%; }
 .st-key-qdel div[data-testid="stPopover"] > button, .st-key-qdel button {
     width: 100% !important; min-height: 0 !important; height: 1.2rem !important; line-height: 1 !important;
-    padding: 0 !important; border: none !important; position: relative; top: 0.45rem;
+    padding: 0 !important; border: none !important;
     background: transparent !important; box-shadow: none !important; color: #8A8A8E !important;
     font-size: 0.78rem !important; font-weight: 600 !important; justify-content: center; }
 .st-key-qdel button:hover { color: #B24A3A !important; }
@@ -404,7 +406,7 @@ def header_row() -> None:
     with cols[4].container(key="qdel"):
         with st.popover("Q", help="Quick delete", use_container_width=True):
             quick_delete_panel()
-    cols[4].markdown("<div class='col-h'></div>", unsafe_allow_html=True)
+    cols[4].markdown("<div class='col-h'>&nbsp;</div>", unsafe_allow_html=True)
 
 
 def render(todo: dict, hide_name: bool = False, divider: bool = True) -> None:

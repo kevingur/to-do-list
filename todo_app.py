@@ -322,7 +322,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-WIDTHS = [1.7, 3.6, 1.5, 0.8, 0.5]  # Who, Job, Due, Status/Add, delete
+WIDTHS = [1.7, 3.6, 1.5, 0.6, 0.5]  # Who, Job, Due, Status/Add, delete
 
 # ---------- load ----------
 try:

@@ -175,6 +175,7 @@ span[data-testid="stIconMaterial"], .material-symbols-rounded {
 }
 
 header[data-testid="stHeader"], #MainMenu, footer { display: none; }
+div[data-testid="InputInstructions"] { display: none !important; }  /* "Press Enter to submit" hint */
 .block-container { max-width: 780px; padding-top: 2.4rem; padding-bottom: 5rem; }
 
 .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.4rem; }

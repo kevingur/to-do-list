@@ -275,12 +275,12 @@ div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { 
 [class*="st-key-stat_"] div[data-testid="stButton"] button {
     width: 100% !important; min-height: 2.6rem !important; font-weight: 600 !important;
     border-radius: 6px !important; font-size: 0.95rem !important; }
-[class*="st-key-stat_yes"] button { background: #EAF3DE !important; color: #27500A !important;
+[class*="st-key-stat_yes"] button { background: #3FA34D !important; color: #FFFFFF !important;
     border: none !important; box-shadow: none !important; }
-[class*="st-key-stat_yes"] button:hover { background: #DDEECA !important; }
-[class*="st-key-stat_no"] button { background: #FCEBEB !important; color: #791F1F !important;
+[class*="st-key-stat_yes"] button:hover { background: #35913F !important; }
+[class*="st-key-stat_no"] button { background: #FF4B4B !important; color: #FFFFFF !important;
     border: none !important; box-shadow: none !important; }
-[class*="st-key-stat_no"] button:hover { background: #F8DADA !important; }
+[class*="st-key-stat_no"] button:hover { background: #E63E3E !important; }
 [class*="st-key-stat_"] button p { color: inherit !important; }
 
 /* centre the ✕ and the Q inside their popover triggers */

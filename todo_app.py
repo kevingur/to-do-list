@@ -203,6 +203,13 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows [data-testid="stVerticalBlock"] { gap: 0.6rem !important; }
 [class*="_sub_"] { margin-top: -0.55rem !important; }
 
+/* quick add: first column stretches over the hidden 2nd/3rd so Add lines up with the row below */
+.st-key-quick_add div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) {
+    flex: 1 1 0 !important; min-width: 0 !important; }
+.st-key-quick_add div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2),
+.st-key-quick_add div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) {
+    display: none !important; }
+
 /* Add button matches input height */
 .st-key-new_task div[data-testid="stButton"] button,
 .st-key-quick_add div[data-testid="stButton"] button { min-height: 2.6rem !important; max-height: 2.6rem; border-radius: 6px !important; }
@@ -295,8 +302,7 @@ except Exception as e:
 if "ANTHROPIC_API_KEY" in st.secrets:
     st.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
     with st.container(key="quick_add"):
-        q_txt, q_btn, _ = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3], WIDTHS[4]],
-                                     vertical_alignment="bottom")
+        q_txt, _, _, q_btn, _ = st.columns(WIDTHS, vertical_alignment="bottom")
         q_txt.text_input("Quick add", key="quick_text", label_visibility="collapsed",
                          placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"",
                          on_change=run_quick_add)

@@ -1,0 +1,23 @@
+name: Daily task notification
+
+on:
+  schedule:
+    # GitHub cron UTC'dir. 05:00 UTC = 08:00 Türkiye. Saati değiştirmek için
+    # ilk sayıyı (dakika) ve ikinciyi (saat, UTC) düzenle.
+    - cron: "0 5 * * *"
+  workflow_dispatch:   # Actions sekmesinden elle "Run workflow" ile test edebilirsin
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install supabase requests
+      - run: python notify.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          NTFY_TOPIC:   ${{ secrets.NTFY_TOPIC }}

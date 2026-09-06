@@ -14,6 +14,7 @@ from datetime import date, datetime, timezone
 
 import anthropic
 import streamlit as st
+import streamlit.components.v1 as components
 
 try:
     from streamlit_mic_recorder import speech_to_text
@@ -212,8 +213,8 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
     border-color: #E0E0DC !important; background: #FFFFFF !important; }
 .st-key-rows div[data-baseweb="textarea"], .st-key-rows div[data-baseweb="base-input"]:has(textarea) {
     height: auto !important; min-height: 0 !important; }
-.st-key-rows textarea { field-sizing: content; height: auto !important; min-height: 2.6rem !important;
-    max-height: none !important; padding: 0.55rem 0.4rem !important; font-size: 0.95rem !important;
+.st-key-rows textarea { min-height: 2.6rem !important; max-height: none !important;
+    padding: 0.55rem 0.4rem !important; font-size: 0.95rem !important;
     line-height: 1.5 !important; resize: none !important; overflow: hidden !important; }
 [class*="st-key-row_done"] textarea { color: #B0B0B3 !important; text-decoration: line-through !important; }
 
@@ -530,3 +531,25 @@ with st.container(key="rows"):
     for i, (t, hide) in enumerate(rows):
         next_is_sub = i + 1 < len(rows) and rows[i + 1][1]
         render(t, hide, divider=not next_is_sub)
+
+# ---------- auto-grow the Job boxes (works in every browser) ----------
+components.html(
+    """
+<script>
+(function () {
+  const doc = window.parent.document;
+  function fit(t) { t.style.height = "0px"; t.style.height = t.scrollHeight + "px"; }
+  function init() {
+    doc.querySelectorAll(".st-key-rows textarea").forEach(function (t) {
+      if (!t.dataset.fit) { t.dataset.fit = "1"; t.addEventListener("input", function () { fit(t); }); }
+      fit(t);
+    });
+  }
+  init();
+  new MutationObserver(init).observe(doc.body, { childList: true, subtree: true });
+  setInterval(init, 800);
+})();
+</script>
+""",
+    height=0,
+)

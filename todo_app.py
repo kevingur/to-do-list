@@ -225,7 +225,8 @@ div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { 
     background: transparent !important; box-shadow: none !important; color: #8A8A8E !important;
     font-size: 0.78rem !important; font-weight: 600 !important; justify-content: center; }
 .st-key-qdel button:hover { color: #B24A3A !important; }
-.st-key-qdel button p { color: inherit !important; }
+.st-key-qdel button p { color: inherit !important; font-weight: 600 !important; font-size: 0.78rem !important;
+    position: relative; top: -2px; }
 .st-key-qdel button svg, .st-key-qdel button span[data-testid="stIconMaterial"],
 .st-key-qdel button [data-testid*="Icon"] { display: none !important; }
 

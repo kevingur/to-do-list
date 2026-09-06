@@ -214,8 +214,11 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 
 /* quick add has 2 columns, new task has 4: balance flex-grow so both Add buttons end up the same width */
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stTextInput"]) { flex-grow: 3 !important; }
-.st-key-quick_mic iframe { height: 1.4rem !important; width: 1.6rem !important; display: block; }
-.st-key-quick_mic { margin-bottom: 0.3rem; }
+.st-key-quick_lbl div[data-testid="stHorizontalBlock"] { gap: 0.3rem !important; }
+.st-key-quick_lbl div[data-testid="stColumn"] { min-width: 0 !important; }
+.st-key-quick_mic iframe { height: 1.1rem !important; width: 1.3rem !important; display: block; }
+.st-key-quick_mic { margin-bottom: 0.35rem; }
+.st-key-quick_mic div[data-testid="stElementContainer"] { margin: 0; }
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stFormSubmitButton"]) { flex-grow: 1 !important; }
 
 .st-key-quick_add div[data-testid="stForm"] { padding: 0; border: none; }
@@ -348,7 +351,8 @@ except Exception as e:
 # ---------- quick add ----------
 if "ANTHROPIC_API_KEY" in st.secrets:
     # label row: "Quick add" + a small bare mic icon next to it
-    l_lbl, l_mic, _ = st.columns([0.95, 0.35, 6.7], vertical_alignment="bottom")
+    with st.container(key="quick_lbl"):
+        l_lbl, l_mic, _ = st.columns([0.62, 0.22, 7.16], vertical_alignment="bottom")
     l_lbl.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
     if speech_to_text:
         with l_mic.container(key="quick_mic"):
@@ -359,7 +363,7 @@ if "ANTHROPIC_API_KEY" in st.secrets:
                     "body{margin:0;background:transparent}"
                     ".myButton{border:none !important;background:transparent !important;"
                     "box-shadow:none !important;padding:0 !important;margin:0 !important;"
-                    "font-size:15px !important;line-height:1 !important;cursor:pointer;"
+                    "font-size:12px !important;line-height:1 !important;cursor:pointer;"
                     "filter:grayscale(1) opacity(.6)}"
                     ".myButton:hover{filter:none}"
                     ".myButton[data-recording='true']{filter:none}"

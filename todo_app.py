@@ -183,7 +183,7 @@ span[data-testid="stIconMaterial"], .material-symbols-rounded {
 
 header[data-testid="stHeader"], #MainMenu, footer { display: none; }
 div[data-testid="InputInstructions"] { display: none !important; }  /* "Press Enter to submit" hint */
-.block-container { max-width: 980px; margin: 0 auto; padding: 2.4rem 2rem 5rem 2rem; }
+.block-container { max-width: 900px; margin: 0 auto; padding: 2.4rem 2rem 5rem 2rem; }
 
 .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.4rem; }
 .hdr .day  { font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
@@ -205,8 +205,9 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows div[data-baseweb="input"]:focus-within {
     border-color: #E0E0DC !important; background: #FFFFFF !important; }
 .st-key-rows input { padding-left: 0.4rem !important; padding-right: 0.4rem !important; font-size: 0.95rem !important; }
-.st-key-rows div[data-testid="stDateInput"] input { font-size: 0.88rem !important; letter-spacing: -0.01em;
-    padding: 0 0.85rem 0 0.3rem !important; text-align: center !important; }
+.st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"] input,
+.st-key-rows div[data-testid="stDateInput"] input { font-size: 0.84rem !important; letter-spacing: -0.02em !important;
+    padding: 0 0.4rem 0 0.25rem !important; text-align: center !important; }
 .st-key-rows div[data-testid="stTextInput"], .st-key-rows div[data-testid="stDateInput"],
 .st-key-rows div[data-testid="stTextArea"] { margin-bottom: 0; }
 .st-key-rows div[data-baseweb="textarea"] { background: transparent !important; border-color: transparent !important; }
@@ -358,7 +359,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-WIDTHS = [1.4, 5.5, 0.9, 0.7, 0.45]  # Who, Job, Due, Status/Add, delete
+WIDTHS = [1.2, 5.0, 1.55, 0.7, 0.45]  # Who, Job, Due, Status/Add, delete
 
 # ---------- load ----------
 try:

@@ -280,10 +280,10 @@ div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { 
     width: 100% !important; min-height: 2.6rem !important; font-weight: 600 !important;
     border-radius: 6px !important; font-size: 0.95rem !important; }
 [class*="st-key-stat_yes"] button { background: #EAF3DE !important; color: #27500A !important;
-    border: 1px solid #97C459 !important; }
+    border: none !important; box-shadow: none !important; }
 [class*="st-key-stat_yes"] button:hover { background: #DDEECA !important; }
 [class*="st-key-stat_no"] button { background: #FCEBEB !important; color: #791F1F !important;
-    border: 1px solid #F09595 !important; }
+    border: none !important; box-shadow: none !important; }
 [class*="st-key-stat_no"] button:hover { background: #F8DADA !important; }
 [class*="st-key-stat_"] button p { color: inherit !important; }
 

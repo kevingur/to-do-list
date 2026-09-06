@@ -181,7 +181,8 @@ header[data-testid="stHeader"], #MainMenu, footer { display: none; }
 .hdr .day  { font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
 .hdr .date { font-size: 0.95rem; color: #8A8A8E; }
 
-.add-h, .col-h { font-size: 0.78rem; font-weight: 600; color: #8A8A8E; letter-spacing: 0.02em; white-space: nowrap; }
+.add-h, .col-h { font-size: 0.78rem; font-weight: 600; color: #8A8A8E; letter-spacing: 0.02em; white-space: nowrap;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 .add-h { margin-bottom: 0.3rem; }
 .col-h { padding-bottom: 0.35rem; border-bottom: 1px solid #DEDEDA; margin-bottom: 0.2rem; }
 
@@ -215,7 +216,7 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 /* quick add has 2 columns, new task has 4: balance flex-grow so both Add buttons end up the same width */
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stTextInput"]) { flex-grow: 3 !important; }
 /* "Quick add" label with the mic button as an invisible layer on top of it */
-.st-key-quick_lbl { position: relative; margin-bottom: -0.5rem; }
+.st-key-quick_lbl { position: relative; margin-bottom: -0.7rem; }
 .st-key-quick_lbl .add-h { margin-bottom: 0; }
 .st-key-quick_lbl .st-key-quick_mic { position: absolute !important; left: 0; top: 0;
     width: 14rem !important; height: 1.1rem !important; margin: 0 !important; z-index: 2; }

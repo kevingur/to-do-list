@@ -210,8 +210,8 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows div[data-baseweb="textarea"] { background: transparent !important; border-color: transparent !important; }
 .st-key-rows div[data-baseweb="textarea"]:hover, .st-key-rows div[data-baseweb="textarea"]:focus-within {
     border-color: #E0E0DC !important; background: #FFFFFF !important; }
-.st-key-rows textarea { padding: 0.45rem 0.4rem !important; font-size: 0.95rem !important; line-height: 1.4 !important;
-    resize: none !important; }
+.st-key-rows textarea { padding: 0.55rem 0.4rem !important; font-size: 0.95rem !important; line-height: 1.5 !important;
+    min-height: 2.6rem !important; resize: none !important; }
 [class*="st-key-row_done"] textarea { color: #B0B0B3 !important; text-decoration: line-through !important; }
 
 /* row states */
@@ -494,16 +494,10 @@ def render(todo: dict, hide_name: bool = False, divider: bool = True) -> None:
             c_who.text_input("Who", value=todo["name"], key=f"who_{tid}",
                              label_visibility="collapsed", placeholder="Who",
                              on_change=save_text, args=(tid, "name", f"who_{tid}"))
-        if len(todo["description"]) > 110:
-            rows_needed = 1 + len(todo["description"]) // 110
-            c_job.text_area("Job", value=todo["description"], key=f"job_{tid}",
-                            label_visibility="collapsed", placeholder="Job",
-                            height=max(68, 26 + 22 * rows_needed),
-                            on_change=save_text, args=(tid, "description", f"job_{tid}"))
-        else:
-            c_job.text_input("Job", value=todo["description"], key=f"job_{tid}",
-                             label_visibility="collapsed", placeholder="Job",
-                             on_change=save_text, args=(tid, "description", f"job_{tid}"))
+        # Job is a text area that grows with its content (wraps instead of scrolling sideways)
+        c_job.text_area("Job", value=todo["description"], key=f"job_{tid}",
+                        label_visibility="collapsed", placeholder="Job", height="content",
+                        on_change=save_text, args=(tid, "description", f"job_{tid}"))
         c_due.date_input("Due", value=due, key=f"due_{tid}", format="DD.MM.YYYY",
                          label_visibility="collapsed",
                          on_change=save_due, args=(tid, f"due_{tid}"))

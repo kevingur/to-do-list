@@ -214,33 +214,9 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 
 /* quick add has 2 columns, new task has 4: balance flex-grow so both Add buttons end up the same width */
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stTextInput"]) { flex-grow: 3 !important; }
-/* mic pinned just right of the "Quick add" label, on the same line */
-.st-key-quick_lbl { position: relative; margin-bottom: -0.5rem; }
-.st-key-quick_lbl .add-h { margin-bottom: 0; }
-.st-key-quick_lbl .st-key-quick_mic { position: absolute !important; left: 3.8rem; top: -0.15rem;
-    width: auto !important; height: 1.2rem !important; margin: 0 !important; }
-.st-key-quick_mic iframe { height: 1.1rem !important; width: 1.3rem !important; display: block; }
-.st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stFormSubmitButton"]) { flex-grow: 1 !important; }
-
-.st-key-quick_add div[data-testid="stForm"] { padding: 0; border: none; }
-
-/* Q (quick delete) button in the header row */
-/* zero the vertical gap in the Q column so the Q sits directly on its underline */
-div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { gap: 0 !important; }
-.st-key-qdel div[data-testid="stPopover"], .st-key-qdel div[data-testid="stPopover"] > div { margin: 0 !important; }
-/* the Q overlaps the (blank) header label below it, so its underline matches the other columns exactly */
-.st-key-qdel { margin: 0 0 -1.3rem 0 !important; position: relative; z-index: 2; }
-.st-key-qdel div[data-testid="stPopover"] { width: 100%; }
-.st-key-qdel div[data-testid="stPopover"] > button, .st-key-qdel button {
-    width: 100% !important; min-height: 0 !important; height: 1.2rem !important; line-height: 1 !important;
-    padding: 0 !important; border: none !important;
-    background: transparent !important; box-shadow: none !important; color: #8A8A8E !important;
-    font-size: 0.78rem !important; font-weight: 600 !important; justify-content: center; }
-.st-key-qdel button:hover { color: #B24A3A !important; }
-.st-key-qdel button p { color: inherit !important; font-weight: 600 !important; font-size: 0.78rem !important;
-    transform: translate(-50%, calc(-50% - 2px)) !important; }
-.st-key-qdel button svg, .st-key-qdel button span[data-testid="stIconMaterial"],
-.st-key-qdel button [data-testid*="Icon"] { display: none !important; }
+/* "Quick add" label doubles as the mic button */
+.st-key-quick_mic { margin-bottom: 0.3rem; }
+.st-key-quick_mic iframe { height: 1.1rem !important; width: 14rem !important; display: block; }
 
 /* Add button matches input height */
 .st-key-new_task div[data-testid="stButton"] button,
@@ -351,27 +327,30 @@ except Exception as e:
 
 # ---------- quick add ----------
 if "ANTHROPIC_API_KEY" in st.secrets:
-    # label row: "Quick add" + a small bare mic icon next to it
-    with st.container(key="quick_lbl"):
+    # the "Quick add" label is itself the mic button (click to record, click again to stop)
+    if speech_to_text:
+        with st.container(key="quick_mic"):
+            spoken = speech_to_text(
+                language="tr", start_prompt="Quick add", stop_prompt="● Listening… click to stop",
+                just_once=True, use_container_width=True, key="quick_stt",
+                custom_css=(
+                    "@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600&display=swap');"
+                    "body{margin:0;background:transparent}"
+                    ".myButton{border:none !important;background:transparent !important;"
+                    "box-shadow:none !important;padding:0 !important;margin:0 !important;"
+                    "font-family:'Manrope',-apple-system,sans-serif !important;"
+                    "font-size:12.5px !important;font-weight:600 !important;letter-spacing:0.02em;"
+                    "color:#8A8A8E !important;line-height:1.2 !important;cursor:pointer;text-align:left;"
+                    "white-space:nowrap}"
+                    ".myButton:hover{color:#1B1B1F !important}"
+                    ".myButton[data-recording='true']{color:#B24A3A !important}"
+                ),
+            )
+        if spoken:
+            run_quick_add(spoken)
+            st.rerun()
+    else:
         st.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
-        if speech_to_text:
-            with st.container(key="quick_mic"):
-                spoken = speech_to_text(
-                    language="tr", start_prompt="🎤", stop_prompt="⏹", just_once=True,
-                    use_container_width=True, key="quick_stt",
-                    custom_css=(
-                        "body{margin:0;background:transparent}"
-                        ".myButton{border:none !important;background:transparent !important;"
-                        "box-shadow:none !important;padding:0 !important;margin:0 !important;"
-                        "font-size:12px !important;line-height:1 !important;cursor:pointer;"
-                        "filter:grayscale(1) opacity(.6)}"
-                        ".myButton:hover{filter:none}"
-                        ".myButton[data-recording='true']{filter:none}"
-                    ),
-                )
-            if spoken:
-                run_quick_add(spoken)
-                st.rerun()
     with st.container(key="quick_add"):
         with st.form("quick_form", clear_on_submit=True, border=False):
             q_txt, q_btn = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3] + WIDTHS[4]],

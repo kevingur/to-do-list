@@ -207,7 +207,9 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows input { padding-left: 0.4rem !important; padding-right: 0.4rem !important; font-size: 0.95rem !important; }
 .st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"] input,
 .st-key-rows div[data-testid="stDateInput"] input { font-size: 0.84rem !important; letter-spacing: -0.02em !important;
-    padding: 0 0.4rem 0 0.25rem !important; text-align: center !important; }
+    padding: 0 0 0 0.05rem !important; text-align: left !important; }
+.st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"],
+.st-key-rows div[data-testid="stDateInput"] div[data-baseweb="base-input"] { padding-left: 0.35rem !important; }
 .st-key-rows div[data-testid="stTextInput"], .st-key-rows div[data-testid="stDateInput"],
 .st-key-rows div[data-testid="stTextArea"] { margin-bottom: 0; }
 .st-key-rows div[data-baseweb="textarea"] { background: transparent !important; border-color: transparent !important; }
@@ -359,7 +361,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-WIDTHS = [1.2, 5.0, 1.55, 0.7, 0.45]  # Who, Job, Due, Status/Add, delete
+WIDTHS = [1.2, 5.25, 1.3, 0.7, 0.45]  # Who, Job, Due, Status/Add, delete
 
 # ---------- load ----------
 try:

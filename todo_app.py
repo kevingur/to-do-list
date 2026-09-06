@@ -247,6 +247,12 @@ div[data-testid="stColumn"]:has(.st-key-qdel) [data-testid="stVerticalBlock"] { 
 [class*="st-key-stat_no"] button:hover { background: #F8DADA !important; }
 [class*="st-key-stat_"] button p { color: inherit !important; }
 
+/* centre the ✕ and the Q inside their popover triggers */
+[class*="st-key-del_"] button > div, .st-key-qdel button > div {
+    width: 100% !important; display: flex !important; justify-content: center !important;
+    align-items: center !important; margin: 0 !important; padding: 0 !important; gap: 0 !important; }
+[class*="st-key-del_"] button p, .st-key-qdel button p { width: 100% !important; text-align: center !important; margin: 0 !important; }
+
 /* delete */
 div[data-testid="stButton"]:has(button[kind="tertiary"]) { width: 100%; }
 div[data-testid="stButton"] button[kind="tertiary"] {

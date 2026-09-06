@@ -207,9 +207,13 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows input { padding-left: 0.4rem !important; padding-right: 0.4rem !important; font-size: 0.95rem !important; }
 .st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"] input,
 .st-key-rows div[data-testid="stDateInput"] input { font-size: 0.84rem !important; letter-spacing: -0.02em !important;
-    padding: 0 0 0 0.05rem !important; text-align: left !important; }
+    padding: 0 0 0 0.4rem !important; text-align: left !important; }
+/* strip every inner left inset the date widget adds, so the text starts where Who/Job text starts */
 .st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"],
-.st-key-rows div[data-testid="stDateInput"] div[data-baseweb="base-input"] { padding-left: 0.35rem !important; }
+.st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"] > div,
+.st-key-rows div[data-testid="stDateInput"] div[data-baseweb="base-input"],
+.st-key-rows div[data-testid="stDateInput"] div[data-baseweb="base-input"] > div {
+    padding-left: 0 !important; margin-left: 0 !important; }
 .st-key-rows div[data-testid="stTextInput"], .st-key-rows div[data-testid="stDateInput"],
 .st-key-rows div[data-testid="stTextArea"] { margin-bottom: 0; }
 .st-key-rows div[data-baseweb="textarea"] { background: transparent !important; border-color: transparent !important; }

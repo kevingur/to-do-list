@@ -9,8 +9,10 @@ Connection details live in .streamlit/secrets.toml (local) or
 Streamlit Cloud > App settings > Secrets.
 """
 
+import json
 from datetime import date, datetime, timezone
 
+import anthropic
 import streamlit as st
 from supabase import Client, create_client
 
@@ -75,6 +77,60 @@ def save_due(todo_id: str, key: str) -> None:
         return
     sb.table("todos").update({"due": d.isoformat()}).eq("id", todo_id).execute()
     log("edited", todo_id, f"due: {d.isoformat()}")
+
+
+# ---------- quick add (AI parsing) ----------
+PARSE_PROMPT = """You extract a to-do item from one short sentence written in Turkish or English.
+Today is {today} ({weekday}).
+
+Return ONLY a JSON object, no prose, no code fences:
+{{"who": "...", "job": "...", "due": "YYYY-MM-DD"}}
+
+Rules:
+- "who": the person responsible. Give the bare name as it would appear in a list
+  (strip Turkish case suffixes: "Ahmet'e" -> "Ahmet", "Ayşe'ye" -> "Ayşe").
+  If nobody is named, use "".
+- "job": the task, short, same language as the input, without the person's name
+  and without the date words.
+- "due": resolve relative dates ("yarın", "haftaya salı", "ay sonu", "next Friday",
+  "in 3 days") to an absolute date. If no date is mentioned, use today.
+"""
+
+
+def parse_task(text: str) -> dict:
+    client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
+    msg = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=200,
+        system=PARSE_PROMPT.format(today=date.today().isoformat(),
+                                   weekday=date.today().strftime("%A")),
+        messages=[{"role": "user", "content": text}],
+    )
+    raw = msg.content[0].text.strip()
+    raw = raw[raw.find("{"): raw.rfind("}") + 1]
+    data = json.loads(raw)
+    try:
+        due = date.fromisoformat(str(data.get("due", "")))
+    except ValueError:
+        due = date.today()
+    return {"who": str(data.get("who", "")).strip(),
+            "job": str(data.get("job", "")).strip(), "due": due}
+
+
+def run_quick_add() -> None:
+    text = st.session_state.get("quick_text", "").strip()
+    if not text:
+        return
+    try:
+        parsed = parse_task(text)
+    except Exception as e:  # noqa: BLE001
+        st.session_state["quick_error"] = f"Couldn't parse that: {e}"
+        return
+    st.session_state["nt_who"] = parsed["who"]
+    st.session_state["nt_job"] = parsed["job"]
+    st.session_state["nt_due"] = parsed["due"]
+    st.session_state["quick_text"] = ""
+    st.session_state.pop("quick_error", None)
 
 
 # ---------- page & styling ----------
@@ -215,13 +271,29 @@ except Exception as e:
     st.error(f"Could not reach the database: {e}")
     st.stop()
 
+# ---------- quick add ----------
+if "ANTHROPIC_API_KEY" in st.secrets:
+    st.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
+    q_txt, q_btn = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3] + WIDTHS[4]],
+                              vertical_alignment="bottom")
+    q_txt.text_input("Quick add", key="quick_text", label_visibility="collapsed",
+                     placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"",
+                     on_change=run_quick_add)
+    q_btn.button("Fill in", key="quick_btn", on_click=run_quick_add, use_container_width=True)
+    if st.session_state.get("quick_error"):
+        st.caption(f":red[{st.session_state['quick_error']}]")
+    st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
+
 # ---------- add row ----------
+st.session_state.setdefault("nt_who", "")
+st.session_state.setdefault("nt_job", "")
+st.session_state.setdefault("nt_due", today)
 st.markdown("<div class='add-h'>New task</div>", unsafe_allow_html=True)
 with st.form("new_task", clear_on_submit=True, border=False):
     a_who, a_job, a_due, a_btn, _ = st.columns(WIDTHS, vertical_alignment="bottom")
-    who = a_who.text_input("Who", placeholder="Who", label_visibility="collapsed")
-    job = a_job.text_input("Job", placeholder="Job", label_visibility="collapsed")
-    due = a_due.date_input("Due", value=today, format="DD.MM.YYYY",
+    who = a_who.text_input("Who", key="nt_who", placeholder="Who", label_visibility="collapsed")
+    job = a_job.text_input("Job", key="nt_job", placeholder="Job", label_visibility="collapsed")
+    due = a_due.date_input("Due", key="nt_due", format="DD.MM.YYYY",
                            label_visibility="collapsed")
     if a_btn.form_submit_button("Add", type="primary", use_container_width=True):
         if who.strip() or job.strip():

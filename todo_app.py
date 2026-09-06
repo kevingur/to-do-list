@@ -214,7 +214,8 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 
 /* quick add has 2 columns, new task has 4: balance flex-grow so both Add buttons end up the same width */
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stTextInput"]) { flex-grow: 3 !important; }
-.st-key-quick_mic iframe { height: 2.6rem !important; display: block; }
+.st-key-quick_mic iframe { height: 1.4rem !important; width: 1.6rem !important; display: block; }
+.st-key-quick_mic { margin-bottom: 0.3rem; }
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stFormSubmitButton"]) { flex-grow: 1 !important; }
 
 .st-key-quick_add div[data-testid="stForm"] { padding: 0; border: none; }
@@ -346,29 +347,36 @@ except Exception as e:
 
 # ---------- quick add ----------
 if "ANTHROPIC_API_KEY" in st.secrets:
-    st.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
+    # label row: "Quick add" + a small bare mic icon next to it
+    l_lbl, l_mic, _ = st.columns([0.95, 0.35, 6.7], vertical_alignment="bottom")
+    l_lbl.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
+    if speech_to_text:
+        with l_mic.container(key="quick_mic"):
+            spoken = speech_to_text(
+                language="tr", start_prompt="🎤", stop_prompt="⏹", just_once=True,
+                use_container_width=True, key="quick_stt",
+                custom_css=(
+                    "body{margin:0;background:transparent}"
+                    ".myButton{border:none !important;background:transparent !important;"
+                    "box-shadow:none !important;padding:0 !important;margin:0 !important;"
+                    "font-size:15px !important;line-height:1 !important;cursor:pointer;"
+                    "filter:grayscale(1) opacity(.6)}"
+                    ".myButton:hover{filter:none}"
+                    ".myButton[data-recording='true']{filter:none}"
+                ),
+            )
+        if spoken:
+            run_quick_add(spoken)
+            st.rerun()
     with st.container(key="quick_add"):
-        text_w = WIDTHS[0] + WIDTHS[1] + WIDTHS[2]
-        add_w = WIDTHS[3] + WIDTHS[4]
-        if speech_to_text:
-            mic_col, rest = st.columns([0.45, text_w + add_w - 0.45], vertical_alignment="bottom")
-            with mic_col.container(key="quick_mic"):
-                spoken = speech_to_text(language="tr", start_prompt="🎤", stop_prompt="⏹",
-                                        just_once=True, use_container_width=True, key="quick_stt")
-            if spoken:
-                run_quick_add(spoken)
+        with st.form("quick_form", clear_on_submit=True, border=False):
+            q_txt, q_btn = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3] + WIDTHS[4]],
+                                      vertical_alignment="bottom")
+            quick_text = q_txt.text_input("Quick add", label_visibility="collapsed",
+                                          placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"")
+            if q_btn.form_submit_button("Add", type="primary", use_container_width=True):
+                run_quick_add(quick_text)
                 st.rerun()
-            text_w -= 0.45
-        else:
-            rest = st.container()
-        with rest:
-            with st.form("quick_form", clear_on_submit=True, border=False):
-                q_txt, q_btn = st.columns([text_w, add_w], vertical_alignment="bottom")
-                quick_text = q_txt.text_input("Quick add", label_visibility="collapsed",
-                                              placeholder="Say or type it: \"Ahmet yarın kirayı ödesin\"")
-                if q_btn.form_submit_button("Add", type="primary", use_container_width=True):
-                    run_quick_add(quick_text)
-                    st.rerun()
     if st.session_state.get("quick_error"):
         st.caption(f":red[{st.session_state['quick_error']}]")
     st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)

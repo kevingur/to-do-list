@@ -214,8 +214,11 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 
 /* quick add has 2 columns, new task has 4: balance flex-grow so both Add buttons end up the same width */
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stTextInput"]) { flex-grow: 3 !important; }
-/* "Quick add" label doubles as the mic button */
-.st-key-quick_mic { margin-bottom: 0.3rem; }
+/* "Quick add" label with the mic button as an invisible layer on top of it */
+.st-key-quick_lbl { position: relative; margin-bottom: -0.5rem; }
+.st-key-quick_lbl .add-h { margin-bottom: 0; }
+.st-key-quick_lbl .st-key-quick_mic { position: absolute !important; left: 0; top: 0;
+    width: 14rem !important; height: 1.1rem !important; margin: 0 !important; z-index: 2; }
 .st-key-quick_mic iframe { height: 1.1rem !important; width: 14rem !important; display: block; }
 
 /* Q (quick delete) button in the header row */
@@ -344,30 +347,28 @@ except Exception as e:
 
 # ---------- quick add ----------
 if "ANTHROPIC_API_KEY" in st.secrets:
-    # the "Quick add" label is itself the mic button (click to record, click again to stop)
-    if speech_to_text:
-        with st.container(key="quick_mic"):
-            spoken = speech_to_text(
-                language="tr", start_prompt="Quick add", stop_prompt="● Listening… click to stop",
-                just_once=True, use_container_width=True, key="quick_stt",
-                custom_css=(
-                    "@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600&display=swap');"
-                    "body{margin:0;background:transparent}"
-                    ".myButton{border:none !important;background:transparent !important;"
-                    "box-shadow:none !important;padding:0 !important;margin:0 !important;"
-                    "font-family:'Manrope',-apple-system,sans-serif !important;"
-                    "font-size:11.5px !important;font-weight:600 !important;letter-spacing:0.02em;"
-                    "color:#8A8A8E !important;line-height:1.2 !important;cursor:pointer;text-align:left;"
-                    "white-space:nowrap}"
-                    ".myButton:hover{color:#1B1B1F !important}"
-                    ".myButton[data-recording='true']{color:#B24A3A !important}"
-                ),
-            )
-        if spoken:
-            run_quick_add(spoken)
-            st.rerun()
-    else:
+    # "Quick add" label; the mic button is an invisible layer on top of it (click = record)
+    with st.container(key="quick_lbl"):
         st.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
+        if speech_to_text:
+            with st.container(key="quick_mic"):
+                spoken = speech_to_text(
+                    language="tr", start_prompt="Quick add", stop_prompt="● Listening… click to stop",
+                    just_once=True, use_container_width=True, key="quick_stt",
+                    custom_css=(
+                        "body{margin:0;background:transparent}"
+                        ".myButton{border:none !important;box-shadow:none !important;padding:0 !important;"
+                        "margin:0 !important;background:#FBFBFA !important;opacity:0;"
+                        "font-family:-apple-system,BlinkMacSystemFont,sans-serif !important;"
+                        "font-size:12px !important;font-weight:600 !important;letter-spacing:0.02em;"
+                        "color:#B24A3A !important;line-height:1.2 !important;cursor:pointer;text-align:left;"
+                        "white-space:nowrap;width:100%;height:100%}"
+                        ".myButton[data-recording='true']{opacity:1}"
+                    ),
+                )
+            if spoken:
+                run_quick_add(spoken)
+                st.rerun()
     with st.container(key="quick_add"):
         with st.form("quick_form", clear_on_submit=True, border=False):
             q_txt, q_btn = st.columns([WIDTHS[0] + WIDTHS[1] + WIDTHS[2], WIDTHS[3] + WIDTHS[4]],
@@ -504,4 +505,3 @@ with st.container(key="rows"):
     for i, (t, hide) in enumerate(rows):
         next_is_sub = i + 1 < len(rows) and rows[i + 1][1]
         render(t, hide, divider=not next_is_sub)
-        

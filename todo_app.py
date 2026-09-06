@@ -208,6 +208,16 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-rows div[data-testid="stDateInput"] div[data-baseweb="input"] input,
 .st-key-rows div[data-testid="stDateInput"] input { font-size: 0.84rem !important; letter-spacing: -0.02em !important;
     padding: 0 0 0 0.3rem !important; text-align: left !important; }
+/* new-style date field (react-aria): day/month/year are spans, not an <input> */
+.st-key-rows div[data-testid="stDateInputField"] { padding-left: 0 !important; margin-left: 0 !important; }
+.st-key-rows .react-aria-DateField { padding: 0 !important; margin: 0 !important; }
+.st-key-rows .react-aria-DateField > [role="group"] { padding: 0 0 0 0.3rem !important; margin: 0 !important; }
+.st-key-rows .react-aria-DateField span { padding-left: 0 !important; padding-right: 0 !important;
+    font-size: 0.84rem !important; letter-spacing: -0.02em !important; }
+.st-key-rows .react-aria-DateField span[data-type="literal"] { padding: 0 0.05rem !important; }
+[class*="st-key-row_done"] .react-aria-DateField span { color: #B0B0B3 !important; text-decoration: line-through !important; }
+[class*="st-key-row_late"] .react-aria-DateField span { color: #B24A3A !important; font-weight: 600 !important; }
+[class*="st-key-row_today"] .react-aria-DateField span { color: #2F4F6F !important; font-weight: 600 !important; }
 .st-key-rows div[data-testid="stTextInput"], .st-key-rows div[data-testid="stDateInput"],
 .st-key-rows div[data-testid="stTextArea"] { margin-bottom: 0; }
 .st-key-rows div[data-baseweb="textarea"] { background: transparent !important; border-color: transparent !important; }

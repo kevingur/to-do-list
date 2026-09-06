@@ -212,6 +212,17 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 
 .st-key-quick_add div[data-testid="stForm"] { padding: 0; border: none; }
 
+/* Q (quick delete) button in the header row */
+.st-key-qdel div[data-testid="stPopover"] { width: 100%; }
+.st-key-qdel div[data-testid="stPopover"] > button, .st-key-qdel button {
+    width: 100% !important; min-height: 1.6rem !important; padding: 0 !important; border: none !important;
+    background: transparent !important; box-shadow: none !important; color: #8A8A8E !important;
+    font-size: 0.78rem !important; font-weight: 600 !important; justify-content: center; }
+.st-key-qdel button:hover { color: #B24A3A !important; }
+.st-key-qdel button p { color: inherit !important; }
+.st-key-qdel button svg, .st-key-qdel button span[data-testid="stIconMaterial"],
+.st-key-qdel button [data-testid*="Icon"] { display: none !important; }
+
 /* Add button matches input height */
 .st-key-new_task div[data-testid="stButton"] button,
 .st-key-quick_add div[data-testid="stFormSubmitButton"] button { min-height: 2.6rem !important; max-height: 2.6rem; border-radius: 6px !important; }
@@ -249,8 +260,9 @@ hr { margin: 0.5rem 0 !important; border-color: #EDEDEA !important; }
 [class*="st-key-del_"] button p { color: inherit !important; }
 [class*="st-key-del_"] button svg, [class*="st-key-del_"] button span[data-testid="stIconMaterial"],
 [class*="st-key-del_"] button [data-testid*="Icon"] { display: none !important; }
-div[data-testid="stPopoverBody"] { min-width: 150px !important; max-width: 170px; padding: 0.7rem 0.8rem !important;
-    border-radius: 10px; }
+div[data-testid="stPopoverBody"] { border-radius: 10px; }
+div[data-testid="stPopoverBody"]:has(.confirm) { min-width: 150px !important; max-width: 170px; padding: 0.7rem 0.8rem !important; }
+div[data-testid="stPopoverBody"]:has(div[data-testid="stMultiSelect"]) { min-width: 340px !important; max-width: 380px; padding: 0.9rem !important; }
 .confirm { font-size: 0.9rem; font-weight: 600; margin: 0 0 0.5rem 0; text-align: center; }
 .empty { color: #A0A0A3; font-size: 0.95rem; padding: 1.2rem 0; }
 
@@ -357,10 +369,38 @@ def group_rows(tasks: list[dict]) -> list[tuple[dict, bool]]:
 rows = group_rows(todos)
 
 # ---------- table ----------
+def quick_delete_panel() -> None:
+    if not todos:
+        st.caption("Nothing to delete.")
+        return
+    labels = {
+        f"{t['name'] or '—'} — {t['description'] or '—'} · "
+        f"{date.fromisoformat(t['due']).strftime('%d.%m.%Y')}"
+        + ("  ✓" if t["done"] else ""): t["id"]
+        for t in todos
+    }
+    picked = st.multiselect("Tasks", list(labels), label_visibility="collapsed",
+                            placeholder="Pick tasks to delete")
+    if st.button("Delete selected", type="primary", use_container_width=True, disabled=not picked):
+        for lbl in picked:
+            delete_todo(labels[lbl], lbl)
+        st.rerun()
+    done_n = sum(t["done"] for t in todos)
+    if st.button(f"Delete all completed ({done_n})", use_container_width=True, disabled=done_n == 0):
+        for t in todos:
+            if t["done"]:
+                delete_todo(t["id"], f"{t['name']} — {t['description']}")
+        st.rerun()
+
+
 def header_row() -> None:
     cols = st.columns(WIDTHS, vertical_alignment="bottom")
-    for col, label in zip(cols, ["Who", "Job", "Due", "Status", "&nbsp;"]):
+    for col, label in zip(cols[:4], ["Who", "Job", "Due", "Status"]):
         col.markdown(f"<div class='col-h'>{label}</div>", unsafe_allow_html=True)
+    with cols[4].container(key="qdel"):
+        with st.popover("Q", help="Quick delete", use_container_width=True):
+            quick_delete_panel()
+    cols[4].markdown("<div class='col-h'></div>", unsafe_allow_html=True)
 
 
 def render(todo: dict, hide_name: bool = False, divider: bool = True) -> None:

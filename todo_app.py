@@ -105,8 +105,9 @@ Rules:
 - "who": the person responsible. Give the bare name as it would appear in a list
   (strip Turkish case suffixes: "Ahmet'e" -> "Ahmet", "Ayşe'ye" -> "Ayşe").
   If nobody is named, use "".
-- "job": the task, short, same language as the input, without the person's name
-  and without the date words.
+- "job": the task exactly as worded in the input. Only remove the person's name and
+  the date words; do NOT change the verb form, tense, or wording otherwise.
+  Example: "Ahmet yarın ödevini yapsın" -> job: "ödevini yapsın" (not "ödevini yap").
 - "due": resolve relative dates ("yarın", "haftaya salı", "ay sonu", "next Friday",
   "in 3 days") to an absolute date. If no date is mentioned, use today.
 """

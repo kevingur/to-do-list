@@ -181,7 +181,7 @@ header[data-testid="stHeader"], #MainMenu, footer { display: none; }
 .hdr .day  { font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
 .hdr .date { font-size: 0.95rem; color: #8A8A8E; }
 
-.add-h, .col-h { font-size: 0.78rem; font-weight: 600; color: #8A8A8E; letter-spacing: 0.02em; }
+.add-h, .col-h { font-size: 0.78rem; font-weight: 600; color: #8A8A8E; letter-spacing: 0.02em; white-space: nowrap; }
 .add-h { margin-bottom: 0.3rem; }
 .col-h { padding-bottom: 0.35rem; border-bottom: 1px solid #DEDEDA; margin-bottom: 0.2rem; }
 
@@ -217,7 +217,7 @@ div[data-testid="stTextInput"] input, div[data-testid="stDateInput"] input {
 .st-key-quick_lbl div[data-testid="stHorizontalBlock"] { gap: 0.3rem !important; }
 .st-key-quick_lbl div[data-testid="stColumn"] { min-width: 0 !important; }
 .st-key-quick_mic iframe { height: 1.1rem !important; width: 1.3rem !important; display: block; }
-.st-key-quick_mic { margin-bottom: 0.35rem; }
+.st-key-quick_mic { margin-bottom: 0.2rem; }
 .st-key-quick_mic div[data-testid="stElementContainer"] { margin: 0; }
 .st-key-quick_add div[data-testid="stColumn"]:has(div[data-testid="stFormSubmitButton"]) { flex-grow: 1 !important; }
 
@@ -352,7 +352,7 @@ except Exception as e:
 if "ANTHROPIC_API_KEY" in st.secrets:
     # label row: "Quick add" + a small bare mic icon next to it
     with st.container(key="quick_lbl"):
-        l_lbl, l_mic, _ = st.columns([0.62, 0.22, 7.16], vertical_alignment="bottom")
+        l_lbl, l_mic, _ = st.columns([0.9, 0.22, 6.88], vertical_alignment="bottom")
     l_lbl.markdown("<div class='add-h'>Quick add</div>", unsafe_allow_html=True)
     if speech_to_text:
         with l_mic.container(key="quick_mic"):
